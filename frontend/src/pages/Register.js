@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { gql, useMutation } from '@apollo/client';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 const REGISTER_USER = gql`
   mutation Register($username: String!, $password: String!) {
@@ -70,6 +70,7 @@ const Register = () => {
         <button type="submit" disabled={loading}>
           {loading ? 'Registering...' : 'Register'}
         </button>
+        <Link to="/login">Login</Link>
       </form>
       {error && <p>{error.message}</p>}
     </div>
