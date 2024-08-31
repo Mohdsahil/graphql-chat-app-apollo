@@ -4,9 +4,9 @@ import { createClient } from 'graphql-ws';
 import { getMainDefinition } from '@apollo/client/utilities';
 
 const getToken = () => localStorage.getItem('token');
-
+console.log("process.env.REACT_APP_API_URL: ", process.env.REACT_APP_API_URL)
 const httpLink = new HttpLink({
-  uri: 'http://localhost:4000/graphql',
+  uri: process.env.REACT_APP_API_URL,
   headers: {
     authentication: `Bearer ${getToken()}`,
   }
@@ -15,7 +15,7 @@ const httpLink = new HttpLink({
 
 // WebSocket link
 const wsLink = new GraphQLWsLink(createClient({
-  url: 'ws://localhost:4000/graphql',
+  url: process.env.REACT_APP_WS_URL,
   connectionParams: () => ({
     authentication: `Bearer ${getToken()}`,
   }),

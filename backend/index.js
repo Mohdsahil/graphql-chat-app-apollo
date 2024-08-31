@@ -1,3 +1,6 @@
+require('dotenv').config({
+  path: `.env.${process.env.NODE_ENV || 'development'}.local`
+});
 const { ApolloServer } = require('apollo-server-express');
 const { WebSocketServer } = require('ws');
 const { useServer } = require('graphql-ws/lib/use/ws');
@@ -10,7 +13,7 @@ const resolvers = require('./schema/resolvers');
 const { authenticateToken } = require('./middleware/auth');
 
 const startServer = async () => {
-  await mongoose.connect('mongodb://localhost:27017/chat-app', {});
+  await mongoose.connect(process.env.DB_URL, {});
 
   const schema = makeExecutableSchema({
     typeDefs,
