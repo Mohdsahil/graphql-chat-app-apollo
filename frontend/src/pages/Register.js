@@ -32,9 +32,9 @@ const Register = () => {
     try {
       const { data } = await register({ variables: values });
   
-      localStorage.setItem('token', data.login.token);
-      localStorage.setItem('userId', data.login.id);
-      localStorage.setItem('username', data.login.username);
+      localStorage.setItem('token', data.register.token);
+      localStorage.setItem('userId', data.register.id);
+      localStorage.setItem('username', data.register.username);
       navigate(`/users`);
     } catch (err) {
       console.error(err);
