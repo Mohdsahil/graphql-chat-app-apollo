@@ -6,7 +6,7 @@ const generateToken = (user) => {
     return jwt.sign({
       id: user.id,
       username: user.username,
-    }, SECRET_KEY, { expiresIn: '1day' });
+    }, SECRET_KEY, { expiresIn: '30d' });
 };
 
 // Middleware to authenticate token
