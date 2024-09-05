@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { gql, useQuery } from '@apollo/client';
-import Chat from './Chat';
+import Chat from './VChat';
 
 const GET_USERS = gql`
   query GetUsers {

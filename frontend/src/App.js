@@ -5,7 +5,8 @@ import AuthRoute from './components/AuthRoute';
 import Home from './pages/Home'
 import Register from './pages/Register';
 import Login from './pages/Login';
-import Users from './pages/Users'
+import Users from './pages/Users';
+import VideoChat from './pages/VideoChat';
 
 function App() {
   return (
@@ -33,6 +34,14 @@ function App() {
         element={
           <ProtectedRoute>
             <Users />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/video-chat"
+        element={
+          <ProtectedRoute>
+            <VideoChat />
           </ProtectedRoute>
         }
       />

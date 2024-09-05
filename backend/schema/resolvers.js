@@ -9,7 +9,8 @@ const pubsub = new PubSub();
 
 const resolvers = {
   Query: {
-    users: async (_, __, { }) => {
+    users: async (_, __, Usss) => {
+      console.log("Usss:::", Usss)
       const data =  await User.find()
       return data;
     },
@@ -102,6 +103,33 @@ const resolvers = {
         id: newMessage._id.toString()
       };
     },
+
+    startVideoCall: async (_, { receiverId }, { userId }) => {
+      const videoCall = { id: new Date().getTime().toString(), callerId: userId, receiverId, status: 'ringing' };
+      pubsub.publish(`INCOMING_VIDEO_CALL`, { incomingVideoCall: videoCall });
+      return videoCall;
+    },
+
+    acceptVideoCall: (_, { callId }) => {
+      const videoCall = { id: callId, status: 'accepted', callTime: new Date().toISOString() };
+      pubsub.publish('VIDEO_CALL_ACCEPTED', { videoCallAccepted: videoCall });
+      return videoCall;
+    },
+
+    rejectVideoCall: (_, { callId }) => {
+      const videoCall = { id: callId, status: 'rejected' };
+      pubsub.publish('VIDEO_CALL_REJECTED', { videoCallRejected: videoCall });
+      return videoCall;
+    },
+
+    async addIceCandidate(_, { callId, candidate }) {
+      // Publish ICE candidate to the corresponding room
+      pubsub.publish(`ICE_CANDIDATE_${callId}`, {
+        iceCandidate: JSON.parse(candidate),
+      });
+      return true;
+    },
+
   },
 
   Subscription: {
@@ -115,7 +143,7 @@ const resolvers = {
         return data
       },
       next: (_, {}, {}) => {
-        console.log(":data:", data)
+        
       },
       resolve: (payload, { receiverId }) => {
         console.log("=================resolve.....", payload, receiverId)
@@ -125,6 +153,31 @@ const resolvers = {
         // }
         // return null;
       },
+    },
+    incomingVideoCall: {
+      subscribe: (_, payload) => {
+        console.log("++++++++++++++++++incomingVideoCall++++++++++++")
+        console.log(":payload:", payload)
+         return pubsub.asyncIterator(`INCOMING_VIDEO_CALL`)
+      },
+      resolve: (payload, payload2) => {
+        console.log("=================resolve.....", payload, payload2)
+        return payload.incomingVideoCall
+        // if (payload.messageSent.receiver.id.toString() === receiverId) {
+        //   return payload.messageSent;
+        // }
+        // return null;
+      },
+    },
+    videoCallAccepted: {
+      subscribe: (_, { callId }) => pubsub.asyncIterator(`VIDEO_CALL_ACCEPTED_${callId}`),
+    },
+    videoCallRejected: {
+      subscribe: (_, { callId }) => pubsub.asyncIterator(`VIDEO_CALL_REJECTED_${callId}`),
+    },
+
+    iceCandidate: {
+      subscribe: (_, { callId }) => pubsub.asyncIterator(`ICE_CANDIDATE_${callId}`),
     },
   }
 };

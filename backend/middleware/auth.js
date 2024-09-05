@@ -19,7 +19,7 @@ const authenticateToken = (connectionParams) => {
       if (token) {
         try {
           const user = jwt.verify(token, SECRET_KEY);
-          console.log(":user:", user)
+          // console.log(":user:", user)
           return user;
         } catch (err) {
           throw new Error('Invalid/Expired token');
